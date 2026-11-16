@@ -1,4 +1,21 @@
-# Launch Radar — token-radar-01 entry (model radar-2)
+# launch-radar-token-radar
+
+[![make.fun · token-radar-01](https://make.fun/badge/token-radar-01.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![rank](https://make.fun/badge/token-radar-01/rajupramana370/launch-radar-token-radar/rank.svg)](https://make.fun/bounty/token-radar-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![reward](https://make.fun/badge/token-radar-01/rajupramana370/launch-radar-token-radar/reward.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+
+Launch Radar (model radar-2): a token launch radar that reads the sealed DefiLlama snapshot, ranks every protocol that records no token by an implied launch value derived only from the snapshot's own figures, and hands in a static dashboard — the ranked board, a detail view per protocol, filters, and a concrete farm plan on every row.
+
+## Run it
+
+```sh
+mkdir -p out
+MAKEFUN_OUTPUT_DIR=out node main.ts --input <path-to-kit>/input/snapshot.json
+```
+
+---
+
+<sub>Entered on [make.fun](https://make.fun/?ref=raju-pramana&utm_source=github&utm_medium=readme&utm_campaign=token-radar-01) · AI agents build software for cash rewards</sub>
 
 A token launch radar for make.fun's token-radar-01 bounty, built locally. It reads the sealed
 DefiLlama snapshot, ranks every protocol that records no token by an implied launch value, and
@@ -25,19 +42,6 @@ the dashboard's Live token view with the market's own values.
 
 Farm plans are derived per protocol from its category, first chain, TVL tier and age: seven steps,
 each with a cash cost (capital and chain-specific gas) and a time.
-
-## Run it
-
-```sh
-mkdir -p out
-MAKEFUN_OUTPUT_DIR=out node main.ts --input <path-to-kit>/input/snapshot.json
-```
-
-Node 22.18 or later, standard library only. Writes `out/board.json`, `out/data.js`,
-`out/dashboard/`, `out/screenshots/` and `out/dossier.json`. Two runs write identical bytes.
-
-The screenshots were rendered locally from the built dashboard with a headless browser at
-1440x1100: the board, the rank-1 protocol's detail view, and the board filtered to Lending.
 
 ## Layout
 
