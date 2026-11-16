@@ -4,8 +4,9 @@
 // The board covers every slug in the snapshot's watchlist (the floor, never a ceiling) and every
 // other rankable pre-token protocol in the snapshot, at any TVL: the early rows the radar exists to
 // find. A protocol is pre-token when its record carries no token (no market cap, no CoinGecko id, no
-// symbol); the snapshot's live-token protocols are never ranked. They are the model's teachers and
-// the dashboard's comparison set, shown with the market's own values.
+// symbol); rankable also excludes the wrapped, staked and bridged products and exchanges the
+// watchlist rule itself excludes, at any TVL. The snapshot's live-token protocols are never ranked.
+// They are the model's teachers and the dashboard's comparison set, shown with the market's own values.
 //
 // Implied value follows only from the snapshot's own figures, in three parts:
 //
@@ -270,9 +271,30 @@ export function isPreToken(p: SnapshotProtocol): boolean {
   return p.mcap_usd === null && p.gecko_id === null && p.symbol === null;
 }
 
-/** Whether a protocol is one the board may rank: pre-token, not an exchange, not a versioned pool. */
+/** Categories that are a wrapped, staked or bridged product of a token that already trades, or an exchange itself: the watchlist rule's own list. */
+const PRODUCT_CATEGORIES = new Set(['Bridge', 'Canonical Bridge', 'Liquid Staking', 'Liquid Restaking', 'Restaked BTC', 'CEX']);
+
+/** A name carrying a whole word wrapped, staked or staking, in any case. */
+const WRAPPED_WORD = /\b(wrapped|staked|staking)\b/i;
+
+/** A name that begins with an exchange's name: the watchlist rule's own list. */
+const EXCHANGE_PREFIX = /^(Binance|Coinbase|Bybit|Kraken|Bitget|OKX|Bitfinex|Gemini)\b/;
+
+/**
+ * Whether a protocol is one the board may rank: pre-token, and not a wrapped, staked or bridged
+ * product of a token that already trades. The exclusions are the watchlist rule's own, applied to
+ * the whole board, not just the floor: a bridge or a staking wrapper records no token of its own in
+ * the snapshot's fields, but its product is another protocol's token, so ranking it as a launch
+ * would be wrong at any TVL (WBTC and USDT0 are the snapshot's own examples).
+ */
 export function isRankable(p: SnapshotProtocol): boolean {
-  return isPreToken(p) && p.category !== 'CEX' && !VERSIONED.test(p.name);
+  return (
+    isPreToken(p) &&
+    (p.category === null || !PRODUCT_CATEGORIES.has(p.category)) &&
+    !WRAPPED_WORD.test(p.name) &&
+    !EXCHANGE_PREFIX.test(p.name) &&
+    !VERSIONED.test(p.name)
+  );
 }
 
 /** The snapshot's protocol by slug. */
