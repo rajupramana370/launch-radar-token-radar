@@ -12,6 +12,23 @@
 //
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts --input ../input/snapshot.json
+//
+// Inputs, outputs and exit behaviour, in full:
+//   --input <file|dir>   the sealed snapshot: a snapshot.json file, or a directory holding
+//                        one. Default /input. --output <dir> names the output directory
+//                        directly and wins over MAKEFUN_OUTPUT_DIR, which wins over /output.
+//   exit 2               no snapshot at the resolved input path; nothing is written.
+//   exit 1               the model produced a board the gate refuses (boardIssue names the
+//                        reason), screenshots/ holds fewer than 3 images, or a screenshot
+//                        name is not letters, digits and . _ - (1 to 128 characters).
+//   exit 0               board.json ({"rows": [...]}), data.js (the dashboard's dataset as
+//                        window.RADAR), dashboard/ and screenshots/ copied across (regular
+//                        files only, dotfiles skipped), and dossier.json written last of
+//                        all, under the scorer's caps: text 65,536 bytes, at most 4
+//                        screenshots of 524,288 bytes, dashboard at most 400 files and
+//                        4,194,304 bytes. Two summary lines go to stdout.
+// The run is deterministic: the model reads no clock, draws no randomness and makes no
+// network calls, so the same snapshot always writes the same bytes, dossier included.
 
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
